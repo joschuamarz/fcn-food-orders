@@ -4,14 +4,16 @@ import {
     Get,
     Param,
     ParseIntPipe,
+    Patch,
     Post,
     UsePipes,
     ValidationPipe,
     } from '@nestjs/common';
     import { CreateOrderDto } from 'src/orders/dtos/CreateOrder.dto';
     import { OrdersService } from 'src/orders/services/orders/orders.service'; 
+import { Order } from 'src/typeorm';
 
-@Controller('orders')
+@Controller('api/orders')
 export class OrdersController {
 
     constructor(private readonly orderService: OrdersService) {}
@@ -30,6 +32,18 @@ export class OrdersController {
       @UsePipes(ValidationPipe)
       createOrder(@Body() createOrderDto: CreateOrderDto) {
         return this.orderService.createOrder(createOrderDto);
+      }
+
+      @Patch()
+      @UsePipes(ValidationPipe)
+      updateOrder(@Body() order: Order) {
+        return this.orderService.updateOrder(order);
+      }
+
+      @Patch()
+      deleteOrder(@Body() order: Order) {
+        console.log(order);
+        return this.orderService.deleteOrder(order);
       }
 }
 

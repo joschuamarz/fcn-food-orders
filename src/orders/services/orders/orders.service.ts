@@ -34,9 +34,23 @@ export class OrdersService {
 
       createOrder(createOrderDto: CreateOrderDto) {
         const newOrder = this.orderRepository.create(createOrderDto);
+        console.log(createOrderDto)
         return this.orderRepository.save(newOrder);
       }
           
+      updateOrder(order: Order) {
+        return this.orderRepository.update(order.id, order);
+      }
+      deleteOrder(order: Order) {
+        const id: bigint = BigInt(order.id);
+        return this.orderRepository
+        .createQueryBuilder("order")
+        .delete()
+        .from(Order)
+        .where("id = :id", {id: order.id})
+        .execute();
+      }
+
       private getDateOfISOWeek(w: number, y: number) {
         var simple = new Date(y, 0, 1 + (w - 1) * 7);
         var dow = simple.getDay();

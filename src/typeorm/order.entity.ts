@@ -2,10 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from 'typeor
 
 @Entity()
 export class Order {
-  @PrimaryGeneratedColumn({
-    type: 'bigint',
-    name: 'id',
-  })
+  @PrimaryGeneratedColumn()
   id: number;
 
 @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
@@ -18,10 +15,17 @@ public dateCreated: Date;
   name: string;
 
   @Column({
-    name: 'order',
-    nullable: false,
+    name: 'food',
+    nullable: true,
     default: '',
   })
-  order: string;
+  food: string;
+
+  @Column({
+    name: 'supplement',
+    nullable: true,
+    default: '',
+  })
+  supplement: string;
 
 }
