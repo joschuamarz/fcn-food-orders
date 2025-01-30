@@ -42,9 +42,11 @@ export class OrdersService {
       }
           
       updateOrder(order: Order) {
+        console.log('update order')
         return this.orderRepository.update(order.id, order);
       }
       deleteOrder(order: Order) {
+        console.log('delete order')
         return this.orderRepository
         .createQueryBuilder("order")
         .delete()
