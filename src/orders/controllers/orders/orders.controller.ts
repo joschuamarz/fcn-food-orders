@@ -36,15 +36,15 @@ export class OrdersController {
       }
 
       @Delete('delete')
-      @UsePipes(ValidationPipe)
-      updateOrder(@Body() order: Order) {
-        return this.orderService.updateOrder(order);
-      }
-
-      @Patch()
       deleteOrder(@Body() order: Order) {
         console.log(order);
         return this.orderService.deleteOrder(order);
+      }
+
+      @Patch()
+      @UsePipes(ValidationPipe)
+      updateOrder(@Body() order: Order) {
+        return this.orderService.updateOrder(order);
       }
 }
 
