@@ -6,6 +6,7 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    Delete,
     UsePipes,
     ValidationPipe,
     } from '@nestjs/common';
@@ -34,7 +35,7 @@ export class OrdersController {
         return this.orderService.createOrder(createOrderDto);
       }
 
-      @Patch()
+      @Delete('delete')
       @UsePipes(ValidationPipe)
       updateOrder(@Body() order: Order) {
         return this.orderService.updateOrder(order);

@@ -15,20 +15,23 @@ export class OrdersService {
       }
 
       getOrdersForWeek(year: number, week: number) {
-        console.log(year);
-        console.log(week);
-        var refDate = this.getDateOfISOWeek(week, year);
-        console.log(refDate);
-        var startDate = this.getDateOfISOWeek(week, year);
-        startDate.setDate(startDate.getDate() - startDate.getDay() - 2);
-        var endDate = this.getDateOfISOWeek(week, year);
-        endDate.setDate(endDate.getDate() - endDate.getDay() + 4);
-        console.log(startDate);
-        console.log(endDate);
+        // Get Monday of the given week
+        let monday = this.getDateOfISOWeek(week, year);
+        
+        // Start date (Monday)
+        let startDate = new Date(monday); 
+
+        // End date (Friday) -> Monday + 4 days
+        let endDate = new Date(monday);
+        endDate.setDate(endDate.getDate() + 4);
+
+        console.log("Start Date (Monday):", startDate);
+        console.log("End Date (Friday):", endDate);
+
         return this.orderRepository.createQueryBuilder("order")
-        .where("order.dateCreated >= :startDate", { startDate: startDate })
-        .andWhere("order.dateCreated <= :endDate", { endDate: endDate })
-        .getMany();
+            .where("order.dateCreated >= :startDate", { startDate: startDate.toISOString() })
+            .andWhere("order.dateCreated <= :endDate", { endDate: endDate.toISOString() })
+            .getMany();
       }
 
 
@@ -42,7 +45,6 @@ export class OrdersService {
         return this.orderRepository.update(order.id, order);
       }
       deleteOrder(order: Order) {
-        const id: bigint = BigInt(order.id);
         return this.orderRepository
         .createQueryBuilder("order")
         .delete()
@@ -52,15 +54,19 @@ export class OrdersService {
       }
 
       private getDateOfISOWeek(w: number, y: number) {
-        var simple = new Date(y, 0, 1 + (w - 1) * 7);
-        var dow = simple.getDay();
-        var ISOweekStart = simple;
-        if (dow <= 4)
-            ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-        else
-            ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
-        return ISOweekStart;
-    }
+        // Start with January 4th (which is always in ISO week 1)
+        let jan4 = new Date(y, 0, 4);
+    
+        // Find the closest Thursday (ISO weeks always have January 4th in week 1)
+        let thursday = new Date(jan4);
+        thursday.setDate(jan4.getDate() - (jan4.getDay() + 6) % 7 + 3);
+
+        // Calculate the first day of the given week
+        let monday = new Date(thursday);
+        monday.setDate(thursday.getDate() + (w - 1) * 7 - 3); // Subtract 3 to get Monday
+
+        return monday;
+      }
 }
 
   
