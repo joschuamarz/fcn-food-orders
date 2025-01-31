@@ -18,15 +18,17 @@ export class OrdersService {
         // Get Monday of the given week
         let monday = this.getDateOfISOWeek(week, year);
         
-        // Start date (Monday)
-        let startDate = new Date(monday); 
+        // Start date: Friday of the previous week
+        let startDate = new Date(monday);
+        startDate.setDate(monday.getDate() - 3); // Move back to Friday
 
-        // End date (Friday) -> Monday + 4 days
+        // End date: Thursday of the given week (full day)
         let endDate = new Date(monday);
-        endDate.setDate(endDate.getDate() + 4);
+        endDate.setDate(monday.getDate() + 3); // Move forward to Thursday
+        endDate.setHours(23, 59, 59, 999); // Include entire day
 
-        console.log("Start Date (Monday):", startDate);
-        console.log("End Date (Friday):", endDate);
+        console.log("Start Date (Friday of prev week):", startDate);
+        console.log("End Date (Thursday of current week, full day):", endDate);
 
         return this.orderRepository.createQueryBuilder("order")
             .where("order.dateCreated >= :startDate", { startDate: startDate.toISOString() })
